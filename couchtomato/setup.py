@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""You need to have setuptools installed.
+"""You need to have setuptools installed. Use command
+pip install setuptools
 
 Usage:
     python setup.py develop
