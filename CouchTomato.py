@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """Wrapper for the command line interface."""
 
 from os.path import dirname, isfile
@@ -18,43 +19,31 @@ log = CPLog(__name__)
 try:
     from couchtomato import cli
 except ImportError:
-    print ("Checking local dependencies...")
+    log.info("Checking local dependencies...")
     if isfile(__file__):
         cwd = dirname(__file__)
-        print ("Updating libraries...")
-        stdout, stderr = subprocess.Popen(["git", "submodule", "init"],
+        log.info("Updating libraries...")
+        stdout, stderr = subprocess.Popen(['git', 'submodule', 'init'],
                                           stderr = subprocess.PIPE,
                                           stdout = subprocess.PIPE).communicate()
         if stderr:
-            print ("[WARNING] Git is complaining:")
-            print ("=" * 78)
-            print (stderr)
-            print ("=" * 78)
-        stdout, stderr = subprocess.Popen(["git", "submodule", "update"],
+            log.info("[WARNING] Git is complaining:")
+            log.info(stderr)
+        stdout, stderr = subprocess.Popen(['git', 'submodule', 'init'],
                                           stderr = subprocess.PIPE,
                                           stdout = subprocess.PIPE).communicate()
         if stderr:
-            print ("[WARNING] Git is complaining:")
-            print ("=" * 78)
-            print (stderr)
-            print ("=" * 78)
-        #print ("Registering libraries...")
-        # Insert local directories into path
-        #lib_path = os.path.join(os.path.abspath(cwd), 'libs')
-        #src_path = os.path.join(os.path.abspath(cwd), 'src')
-        #sys.path.insert(0, lib_path)
-        #sys.path.insert(0, src_path)
-        print (sys.path)
-        print ("Passing execution to couchtomato...")
+            log.info("[WARNING] Git is complaining:")
+            log.info(stderr)
+        
+        log.info("Passing execution to couchtomato...")
         try:
             from couchtomato import cli
         except ImportError:
-            print ("[ERROR]: Something's seriously wrong.")
-            print ("=" * 78)
-            traceback.print_exc()
-            print ("=" * 78)
-            print ("Aborting...")
+            log.error("[ERROR]: Something's seriously wrong.")
+            log.error(traceback.print_exc())
             sys.exit(1)
+            
     else:
         # Running from Titanium
         raise NotImplementedError("Don't know how to do that.")
