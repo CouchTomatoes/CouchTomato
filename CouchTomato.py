@@ -13,7 +13,7 @@ base_path = dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(base_path, 'libs'))
 
 from couchpotato.core.logger import CPLog
-log = CPLog(__name__);
+log = CPLog(__name__)
 
 try:
     from couchtomato import cli
@@ -61,6 +61,6 @@ except ImportError:
 
 if __name__ == "__main__":
     try:
-        cli.cmd_couchpotato(base_path)
+        cli.cmd_couchtomato(base_path)
     except Exception as e:
         log.critical(e)

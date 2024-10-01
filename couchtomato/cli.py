@@ -1,5 +1,6 @@
 from blinker import signal
 from couchtomato import app
+from couchtomato.core.logger import CPLog
 from couchtomato.settings import Settings
 from logging import handlers
 from optparse import OptionParser
@@ -12,17 +13,25 @@ def cmd_couchtomato(base_path):
     
     # Options
     parser = OptionParser('usage: %prog [options]')
-    parser.add_option('-l', '--logdir', dest = 'logdir', default = 'logs', help = 'log DIRECTORY (default ./logs)')
+    parser.add_option('-s', '--datadir', dest = 'data_dir', default = base_path, help = 'Absolute or ~/ path, where settings/logs/database data is saved (default ./)')
     parser.add_option('-t', '--test', '--debug', action = 'store_true', dest = 'debug', help = 'Debug mode')
     parser.add_option('-q', '--quiet', action = 'store_true', dest = 'quiet', help = "Don't log to console")
     parser.add_option('-d', '--daemon', action = 'store_true', dest = 'daemonize', help = 'Daemonize the app')
+    
     (options, args) = parser.parse_args(sys.argv[1:])
+    
+    # Create data dir if needed
+    if not os.path.isdir(options.data_dir):
+        options.data_dir = os.path.expanduser(options.data_dir)
+        os.makedirs(options.data_dir)
+    
+    # Create logging dir
+    log_dir = os.path.join(options.data_dir, 'logs');
+    if not os.path.isdir(log_dir):
+        os.mkdir(log_dir)
+    
     # Register settings
-    # settings = Settings('settings.conf')
-    # register = signal('settings_register')
-    # register.connect(settings.registerDefaults)
-    # debug = "False" #options.debug or settings.get('environment') == 'development'
-    settings = Settings(os.path.join(base_path, 'settings.conf'))
+    settings = Settings(os.path.join(options.data_dir, 'settings.conf'))
     debug = options.debug or settings.get('debug', default = False)
 
     # Logger
@@ -30,25 +39,32 @@ def cmd_couchtomato(base_path):
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s', '%H:%M:%S')
     level = logging.DEBUG if debug else logging.INFO
     logger.setLevel(level)
+    
     # Output logging information to screen
     if debug and not options.quiet:
         hdlr = logging.StreamHandler(sys.stderr)
         hdlr.setFormatter(formatter)
         logger.addHandler(hdlr)
+    
     # Output logging information to file
-    hdlr2 = handlers.RotatingFileHandler(os.path.join(options.logdir, 'Couchtomato.log'), 'a', 5000000, 4)
+    hdlr2 = handlers.RotatingFileHandler(os.path.join(log_dir, 'Couchtomato.log'), 'a', 5000000, 4)
     hdlr2.setFormatter(formatter)
     logger.addHandler(hdlr2)
+    
+    # Start logging
+    log = CPLog(__name__)
+    log.debug('Started with params %s' % args)
+
     # Load config
     from couchtomato.settings.loader import SettingsLoader
+    
     # SettingsLoader(root = base_path)
     sl = SettingsLoader(root = base_path)
-    sl.loadConfig('couchtomato', 'core')
+    sl.addConfig('couchtomato', 'core')
+    sl.run()
 
     # Create app
-    # ToDO The config are not getting fetched at all on line 26, and 48 and on 36 directory has to be created if not exists which was not working until I created the log folder
-    # app.run(host = settings.get('host'), port = int(settings.get('port')), debug = debug)
-    app
     app.host = settings.get('host', default = '0.0.0.0')
     app.port = settings.get('port', default = 5000)
-    app.run(debug = debug)
+    app.debug = debug
+    app.run()
