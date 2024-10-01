@@ -1,6 +1,8 @@
-from flask import Flask
+from couchtomato import app
 import argparse
 
 def cmd_couchtomato():
-    app = Flask(__name__)
-    app.run(debug = True)
+    """Commandline entry point."""
+    # Make sure views are imported and registered.
+    #import couchtomato.views
+    app.run(debug=True)
