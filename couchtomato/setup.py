@@ -19,9 +19,10 @@ setup(name="couchtomato",
       packages=['couchtomato'],
       install_requires=[
           'argparse',
-          'sqlalchemy',
           'elixir',
-          'nose'],
+          'flask',
+          'nose',
+          'sqlalchemy'],
       entry_points="""
       [console_scripts]
       couchtomato = couchtomato.cli:cmd_couchtomato
