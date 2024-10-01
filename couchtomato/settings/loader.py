@@ -24,7 +24,8 @@ class SettingsLoader:
         did_save = 0
         
         for module, plugin_name in self.configs.items():
-            did_save += self.loadConfig(module, plugin_name, save = False)
+            if plugin_name != '__pycache__':
+                did_save += self.loadConfig(module, plugin_name, save = False)
             
             if did_save:
                 self.settings_save.send()
