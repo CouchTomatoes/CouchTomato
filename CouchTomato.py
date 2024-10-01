@@ -52,5 +52,5 @@ except ImportError:
         # Running from Titanium
         raise NotImplementedError("Don't know how to do that.")
 
-
-cli.cmd_couchtomato()
+if __name__ == "__main__":
+    cli.cmd_couchtomato()
