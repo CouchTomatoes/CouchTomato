@@ -14,12 +14,14 @@ class Resource(Entity):
     name = Field(UnicodeString(255))
     path = Field(UnicodeString(255))
     releases = OneToMany('Release')
+
 class Release(Entity):
     """Logically groups all files that belong to a certain release, such as
     parts of a movie, subtitles, nfo, trailers etc."""
     files = OneToMany('File')
     mooli_id = Field(Integer)
     resource = ManyToOne('Resource')
+
 class File(Entity):
     """File that belongs to a release."""
     history = OneToMany('RenameHistory')
@@ -30,7 +32,16 @@ class File(Entity):
     # Let's remember the size so we know about offline media.
     size = Field(Integer, nullable=False)
     type = ManyToOne('FileType')
+
 class FileType(Entity):
     """Types could be trailer, subtitle, movie, partial movie etc."""
     name = Field(UnicodeString(255))
+    identifier = Field(String(20), unique=True)
+    name = Field(UnicodeString(255), nullable=False)
     files = OneToMany('File')
+
+class RenameHistory(Entity):
+    """Remembers from where to where files have been moved."""
+    file = ManyToOne('File')
+    old = Field(String(255))
+    new = Field(String(255))
