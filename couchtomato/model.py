@@ -18,12 +18,17 @@ class Release(Entity):
     """Logically groups all files that belong to a certain release, such as
     parts of a movie, subtitles, nfo, trailers etc."""
     files = OneToMany('File')
+    mooli_id = Field(Integer)
+    resource = ManyToOne('Resource')
 class File(Entity):
     """File that belongs to a release."""
-    path = Field(UnicodeString(255))
+    history = OneToMany('RenameHistory')
+    path = Field(UnicodeString(255), nullable=False, unique=True)
+    # Subtitles can have multiple parts, too
+    part = Field(Integer)
     release = ManyToOne('Release')
     # Let's remember the size so we know about offline media.
-    size = Field(Integer)
+    size = Field(Integer, nullable=False)
     type = ManyToOne('FileType')
 class FileType(Entity):
     """Types could be trailer, subtitle, movie, partial movie etc."""
