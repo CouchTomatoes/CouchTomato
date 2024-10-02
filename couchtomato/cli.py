@@ -1,7 +1,7 @@
 # from couchtomato.api import api
 from couchtomato.core.logger import CPLog
 from couchtomato.core.settings import settings
-from libs.daemon import createDaemon
+# from libs.daemon import createDaemon
 from logging import handlers
 from optparse import OptionParser
 import logging
@@ -9,7 +9,7 @@ import os.path
 import sys
 
 
-def cmd_couchtomato(base_path):
+def cmd_couchtomato(base_path, argv = None):
     '''Commandline entry point.'''
 
     # Options
