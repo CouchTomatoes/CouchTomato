@@ -57,6 +57,10 @@ def cmd_couchtomato(base_path):
     hdlr2.setFormatter(formatter)
     logger.addHandler(hdlr2)
 
+    # Disable server access log
+    server_log = logging.getLogger('werkzeug')
+    server_log.disabled = True
+
     # Start logging
     log = CPLog(__name__)
     log.debug('Started with params %s' % args)
