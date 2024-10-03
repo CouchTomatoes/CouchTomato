@@ -1,9 +1,8 @@
-from couchtomato.core.settings import Settings
+from couchtomato.core.settings import settings
 from flask import request, Response
 from functools import wraps
 
 def check_auth(username, password):
-    settings = Settings(os.path.join(options.data_dir, 'settings.conf'))
     return username == settings.get('username') and password == settings.get('password')
 
 def authenticate():

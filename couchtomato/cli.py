@@ -1,7 +1,7 @@
 from couchtomato import app
 # from couchtomato.api import api
 from couchtomato.core.logger import CPLog
-from couchtomato.core.settings import Settings
+from couchtomato.core.settings import settings
 # from couchtomato import web
 from logging import handlers
 from optparse import OptionParser
@@ -34,7 +34,7 @@ def cmd_couchtomato(base_path):
 
 
     # Register settings
-    settings = Settings(os.path.join(options.data_dir, 'settings.conf'))
+    settings.setFile(os.path.join(options.data_dir, 'settings.conf'))
     debug = options.debug or settings.get('debug', default = True)
 
 
