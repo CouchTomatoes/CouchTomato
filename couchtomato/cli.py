@@ -4,23 +4,23 @@ from couchtomato.api import api
 from couchtomato.core.logger import CPLog
 from couchtomato.core.settings import settings
 from logging import handlers
-from optparse import OptionParser
+from argparse import ArgumentParser
 import logging
 import os.path
 import sys
 
 
-def cmd_couchtomato(base_path):
+def cmd_couchtomato(base_path, args):
     '''Commandline entry point.'''
 
     # Options
-    parser = OptionParser('usage: %prog [options]')
-    parser.add_option('-s', '--datadir', dest = 'data_dir', default = base_path, help = 'Absolute or ~/ path, where settings/logs/database data is saved (default ./)')
-    parser.add_option('-t', '--test', '--debug', action = 'store_true', dest = 'debug', help = 'Debug mode')
-    parser.add_option('-q', '--quiet', action = 'store_true', dest = 'quiet', help = "Don't log to console")
-    parser.add_option('-d', '--daemon', action = 'store_true', dest = 'daemonize', help = 'Daemonize the app')
+    parser = ArgumentParser('usage: %prog [options]')
+    parser.add_argument('-s', '--datadir', dest = 'data_dir', default = base_path, help = 'Absolute or ~/ path, where settings/logs/database data is saved (default ./)')
+    parser.add_argument('-t', '--test', '--debug', action = 'store_true', dest = 'debug', help = 'Debug mode')
+    parser.add_argument('-q', '--quiet', action = 'store_true', dest = 'quiet', help = "Don't log to console")
+    parser.add_argument('-d', '--daemon', action = 'store_true', dest = 'daemonize', help = 'Daemonize the app')
 
-    (options, args) = parser.parse_args(sys.argv[1:])
+    options = parser.parse_args(args)
 
     # Create data dir if needed
     if not os.path.isdir(options.data_dir):
@@ -31,6 +31,10 @@ def cmd_couchtomato(base_path):
     log_dir = os.path.join(options.data_dir, 'logs');
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
+
+    # Daemonize app
+    if options.daemonize:
+        createDaemon()
 
 
     # Register settings
@@ -93,4 +97,4 @@ def cmd_couchtomato(base_path):
     app.register_blueprint(api, url_prefix = '%s/%s/%s/' % (url_base, 'api', api_key))
 
     # Go go go!
-    app.run()
+    app.run(use_reloader = reloader)
