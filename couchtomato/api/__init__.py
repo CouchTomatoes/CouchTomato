@@ -1,7 +1,7 @@
-# from flask import Module
+from flask import Blueprint
 
-# api = Module(__name__)
+api = Blueprint('api', __name__)
 
-# @api.route('/')
-# def index():
-#     return 'api'
+@api.route('/')
+def index():
+    return 'api'

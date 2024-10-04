@@ -1,8 +1,8 @@
 from couchtomato import app
-# from couchtomato.api import api
+from couchtomato import web
+from couchtomato.api import api
 from couchtomato.core.logger import CPLog
 from couchtomato.core.settings import settings
-# from couchtomato import web
 from logging import handlers
 from optparse import OptionParser
 import logging
@@ -88,8 +88,8 @@ def cmd_couchtomato(base_path):
     #                  view_func = app.send_static_file)
 
     # Register modules
-    # app.register_module(web, url_prefix = url_base)
-    # app.register_module(api, url_prefix = '%sapi/%s' % (url_base, api_key))
+    app.register_blueprint(web, url_prefix = url_base)
+    app.register_blueprint(api, url_prefix = '%sapi/%s' % (url_base, api_key))
 
     # Go go go!
     app.run()
