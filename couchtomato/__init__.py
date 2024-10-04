@@ -5,6 +5,7 @@ from flask.globals import request
 from flask.helpers import url_for
 from flask.templating import render_template
 from werkzeug.utils import redirect
+import os
 
 app = Flask(__name__)
 log = CPLog(__name__)
@@ -15,7 +16,7 @@ web = Blueprint('web', __name__)
 @requires_auth
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', sep = os.sep)
 
 @app.errorhandler(404)
 def page_not_found(error):

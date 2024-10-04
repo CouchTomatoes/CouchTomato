@@ -69,10 +69,10 @@ def cmd_couchtomato(base_path, args):
 
 
     # Load configs
-    from couchtomato.core.settings.loader import SettingsLoader
-    sl = SettingsLoader(root = base_path)
-    sl.addConfig('couchtomato', 'core')
-    sl.run()
+    from couchtomato.core.settings.loader import settings_loader
+    settings_loader.load(root = base_path)
+    settings_loader.addConfig('couchtomato', 'core')
+    settings_loader.run()
 
 
     # Create app
@@ -94,7 +94,7 @@ def cmd_couchtomato(base_path, args):
 
     # Register modules
     app.register_blueprint(web, url_prefix = '%s/' % url_base)
-    app.register_blueprint(api, url_prefix = '%s/%s/%s/' % (url_base, 'api', api_key))
+    app.register_blueprint(api, url_prefix = '%s/%s/%s/' % (url_base, 'api', api_key if not debug else 'apikey'))
 
     # Go go go!
     app.run(use_reloader = reloader)

@@ -7,16 +7,20 @@ log = CPLog(__name__)
 class SettingsLoader:
 
     configs = {}
+    sections = {}
 
-    def __init__(self, root = ''):
+    def __init__(self):
 
         self.settings_register = signal('settings.register')
         self.settings_save = signal('settings.save')
+
+    def load(self, root = ''):
 
         self.paths = {
             'plugins' : ('couchtomato.core.plugins', os.path.join(root, 'couchtomato', 'core', 'plugins')),
             'providers' : ('couchtomato.core.providers', os.path.join(root, 'couchtomato', 'core', 'providers')),
         }
+
         for type, tuple in self.paths.items():
             self.addFromDir(tuple[0], tuple[1])
 
@@ -41,10 +45,16 @@ class SettingsLoader:
         print (module_name)
         try:
             m = getattr(self.loadModule(module_name), name)
-            (section, options) = m.config
-            self.settings_register.send(section, options = options, save = save)
+            
+            for section in m.config:
+                self.addSection(section['name'], section)
+                options = {}
+                for key, option in section['options'].items():
+                    options[key] = option['default']
+                self.settings_register.send(section['name'], options = options, save = save)
+
             return True
-        except (Exception, e):
+        except Exception as e:
             log.error("Failed loading config for %s: %s" % (name, e))
             return False
 
@@ -60,3 +70,11 @@ class SettingsLoader:
             return m
         except:
             raise
+
+    def addSection(self, section_name, options):
+        self.sections[section_name] = options
+
+    def getSections(self):
+        return self.sections
+
+settings_loader = SettingsLoader()
