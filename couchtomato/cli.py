@@ -73,14 +73,15 @@ def cmd_couchtomato(base_path):
 
     # Create app
     api_key = settings.get('api_key')
-    url_base = '/%s/' % settings.get('url_base')
+    url_base = '/' + settings.get('url_base') if settings.get('url_base') else ''
+    reloader = debug and not options.daemonize
 
     # Basic config
     app.host = settings.get('host', default = '0.0.0.0')
     app.port = settings.get('port', default = 5000)
     app.debug = debug
     app.secret_key = api_key
-    app.static_path = url_base + 'static'
+    app.static_path = url_base + '/static'
 
     # Add static url with url_base
     # app.add_url_rule(app.static_path + '/<path:filename>',
@@ -88,8 +89,8 @@ def cmd_couchtomato(base_path):
     #                  view_func = app.send_static_file)
 
     # Register modules
-    app.register_blueprint(web, url_prefix = url_base)
-    app.register_blueprint(api, url_prefix = '%sapi/%s' % (url_base, api_key))
+    app.register_blueprint(web, url_prefix = '%s/' % url_base)
+    app.register_blueprint(api, url_prefix = '%s/%s/%s/' % (url_base, 'api', api_key))
 
     # Go go go!
     app.run()
