@@ -11,19 +11,19 @@ Running from Source
 Dependencies
 =====
 
-Install Python 3.0 +: Python 3.10.0
-Install GIT
-Open up Terminal
+Install Python 3.0 +: Python 3.10.0  
+Install GIT  
+Open up Terminal  
 
 OSx:
 
-Go to your App folder cd /Applications
-Run git clone https://github.com/CouchTomatoes/CouchTomato.git
-Then do python CouchTomato/CouchTomato.py
+Go to your App folder cd /Applications   
+Run git clone https://github.com/CouchTomatoes/CouchTomato.git   
+Then do python CouchTomato/CouchTomato.py   
 
 Linux (ubuntu / debian):
 
-Install GIT with apt-get install git-core
-'cd' to the folder of your choosing.
-Run git clone https://github.com/CouchTomatoes/CouchTomato.git
-Then do python CouchTomato/CouchTomato.py to start
+Install GIT with apt-get install git-core   
+'cd' to the folder of your choosing.   
+Run git clone https://github.com/CouchTomatoes/CouchTomato.git   
+Then do python CouchTomato/CouchTomato.py to start   
