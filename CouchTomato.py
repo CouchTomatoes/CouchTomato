@@ -13,7 +13,7 @@ base_path = dirname(os.path.abspath(__file__))
 # Insert local directories into path
 sys.path.insert(0, os.path.join(base_path, 'libs'))
 
-from couchpotato.core.logger import CPLog
+from couchtomato.core.logger import CPLog
 log = CPLog(__name__)
 
 try:
