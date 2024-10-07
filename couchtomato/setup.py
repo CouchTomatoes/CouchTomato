@@ -19,7 +19,6 @@ setup(name="couchtomato",
       packages=['couchtomato'],
       install_requires=[
           'argparse',
-          'elixir',
           'flask',
           'nose',
           'sqlalchemy'],

@@ -1,5 +1,6 @@
 from couchtomato.api.file_browser import FileBrowser
-from couchtomato.core.settings import settings
+from couchtomato.core.settings.model import Resource
+from couchtomato.environment import Env
 from couchtomato.core.settings.loader import settings_loader
 from flask import Blueprint
 from flask import jsonify
@@ -14,7 +15,7 @@ def index():
 def settings_view():
     return jsonify({
         'sections': settings_loader.sections,
-        'values': settings.getValues()
+        'values': Env.get('settings').getValues()
     })
 
 @api.route('setting.save/')
@@ -23,14 +24,15 @@ def setting_save_view():
     section = a.get('section')
     option = a.get('name')
     value = a.get('value')
-    settings.set(section, option, value)
-    settings.save()
+    Env.get('settings').set(section, option, value)
+    Env.get('settings').save()
     return jsonify({
         'success': True,
     });
 
 @api.route('movie/')
 def movie():
+    
     return jsonify({
         'success': True,
         'movies': [

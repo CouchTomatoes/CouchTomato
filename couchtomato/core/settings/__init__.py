@@ -95,5 +95,3 @@ class Settings():
             return True
         except ValueError:
             return False
-
-settings = Settings()
