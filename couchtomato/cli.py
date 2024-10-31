@@ -84,10 +84,44 @@ def cmd_couchtomato(base_path, args):
     settings_loader.addConfig('couchtomato', 'core')
     settings_loader.run()
 
+    # Load migrations
+    # from migrate.versioning.api import version_control, db_version, version, upgrade
+    from flask_migrate import Migrate
+    from flask_sqlalchemy import SQLAlchemy
+
+    dbUri = 'sqlite:///' + Env.get('db_path')
+    app.config["SQLALCHEMY_DATABASE_URI"] = dbUri
+    db = SQLAlchemy(app)
+    migrate = Migrate(app, db)
+
+    with app.app_context():
+        from alembic.config import Config
+        from alembic import command
+
+        repo = base_path + os.path.join('/couchtomato', 'core', 'migrations')
+        if not os.path.exists(repo):
+            alembic_cfg = Config(repo + "/alembic.ini")
+            command.init(alembic_cfg, directory=repo)
+            #command.ensure_version(alembic_cfg)
+        # with db.engine.connect() as connection:
+        #     result = connection.execute("SELECT sqlite_version();")
+        #     latest_db_version = result.fetchone()[0]
+
+    # repo = os.path.join('couchtomato', 'core', 'migration')
+    
+    # latest_db_version = version(repo)
+    
+    # try:
+    #     current_db_version = db_version(db, repo)
+    # except:
+    #     version_control(db, repo, version = latest_db_version)
+    #     current_db_version = db_version(db, repo)
+    
+    # if current_db_version < latest_db_version and not debug:
+    #     log.info('Doing database upgrade. From %d to %d' % (current_db_version, latest_db_version))
+    #     upgrade(db, repo)
+
     # Configure Database
-    # from elixir import setup_all, create_all
-    # setup_all()
-    # create_all(get_engine())
     # https://stackoverflow.com/questions/16284537/creating-sqlite-database-if-it-doesnt-exist
     base.metadata.create_all(get_engine())
 
